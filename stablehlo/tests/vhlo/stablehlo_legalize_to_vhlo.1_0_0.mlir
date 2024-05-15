@@ -1,9 +1,9 @@
 // RUN: stablehlo-opt --mlir-print-op-generic %s.bc | FileCheck %s
-// RUN: stablehlo-translate --deserialize %s.bc | stablehlo-translate --serialize --target=0.14.0 | stablehlo-opt --mlir-print-op-generic | FileCheck %s
+// RUN: stablehlo-translate --deserialize %s.bc | stablehlo-translate --serialize --target=1.0.0 | stablehlo-opt --mlir-print-op-generic | FileCheck %s
 // RUN: stablehlo-translate --deserialize %s.bc | stablehlo-opt > %t.0
 // RUN: stablehlo-opt --strip-debuginfo %s > %t.1
 // RUN: diff %t.0 %t.1
-// RUN: stablehlo-translate --serialize --target=0.14.0 --strip-debuginfo %s > %t.2
+// RUN: stablehlo-translate --serialize --target=1.0.0 --strip-debuginfo %s > %t.2
 // RUN: diff %s.bc %t.2
 // RUN: stablehlo-opt --stablehlo-legalize-to-vhlo -emit-bytecode -debug-only=vhlo-bytecode %s 2>&1 | FileCheck --check-prefix=CHECK-WARN %s
 // RUN: stablehlo-opt --stablehlo-legalize-to-vhlo -emit-bytecode %s | stablehlo-opt -debug-only=vhlo-bytecode 2>&1 | FileCheck --check-prefix=CHECK-WARN %s
@@ -13,7 +13,6 @@
 // ============ ATTRIBUTES ============
 
 // CHECK-LABEL: "attr_comparison_direction_eq"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_eq(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 EQ>
@@ -23,7 +22,6 @@ func.func @attr_comparison_direction_eq(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_direction_ne"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_ne(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 NE>
@@ -33,7 +31,6 @@ func.func @attr_comparison_direction_ne(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_direction_ge"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_ge(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 GE>
@@ -43,7 +40,6 @@ func.func @attr_comparison_direction_ge(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_direction_gt"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_gt(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 GT>
@@ -53,7 +49,6 @@ func.func @attr_comparison_direction_gt(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_direction_le"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_le(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 LE>
@@ -63,7 +58,6 @@ func.func @attr_comparison_direction_le(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_direction_lt"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_direction_lt(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     // CHECK: comparison_direction = #vhlo<comparison_direction_v1 LT>
@@ -73,7 +67,6 @@ func.func @attr_comparison_direction_lt(%arg0: tensor<f32>, %arg1: tensor<f32>) 
 }
 
 // CHECK-LABEL: "attr_comparison_type_notype"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_type_notype(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     comparison_direction = #stablehlo<comparison_direction EQ>
@@ -83,7 +76,6 @@ func.func @attr_comparison_type_notype(%arg0: tensor<f32>, %arg1: tensor<f32>) -
 }
 
 // CHECK-LABEL: "attr_comparison_type_float"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_type_float(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     comparison_direction = #stablehlo<comparison_direction EQ>,
@@ -94,7 +86,6 @@ func.func @attr_comparison_type_float(%arg0: tensor<f32>, %arg1: tensor<f32>) ->
 }
 
 // CHECK-LABEL: "attr_comparison_type_totalorder"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_type_totalorder(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     comparison_direction = #stablehlo<comparison_direction EQ>,
@@ -105,7 +96,6 @@ func.func @attr_comparison_type_totalorder(%arg0: tensor<f32>, %arg1: tensor<f32
 }
 
 // CHECK-LABEL: "attr_comparison_type_signed"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_type_signed(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     comparison_direction = #stablehlo<comparison_direction EQ>,
@@ -116,7 +106,6 @@ func.func @attr_comparison_type_signed(%arg0: tensor<f32>, %arg1: tensor<f32>) -
 }
 
 // CHECK-LABEL: "attr_comparison_type_unsigned"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_comparison_type_unsigned(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
   %0 = "stablehlo.compare"(%arg0, %arg1) {
     comparison_direction = #stablehlo<comparison_direction EQ>,
@@ -129,7 +118,6 @@ func.func @attr_comparison_type_unsigned(%arg0: tensor<f32>, %arg1: tensor<f32>)
 // ConvDimensionNumbers aka #stablehlo.conv is covered below.
 
 // CHECK-LABEL: "attr_custom_call_api_version_unspecified"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_custom_call_api_version_unspecified(%arg0: tensor<f32>) -> tensor<f32> {
   %0 = "stablehlo.custom_call"(%arg0) {
     call_target_name = "foo",
@@ -140,7 +128,6 @@ func.func @attr_custom_call_api_version_unspecified(%arg0: tensor<f32>) -> tenso
 }
 
 // CHECK-LABEL: "attr_custom_call_api_version_original"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_custom_call_api_version_original(%arg0: tensor<f32>) -> tensor<f32> {
   %0 = "stablehlo.custom_call"(%arg0) {
     call_target_name = "foo",
@@ -151,7 +138,6 @@ func.func @attr_custom_call_api_version_original(%arg0: tensor<f32>) -> tensor<f
 }
 
 // CHECK-LABEL: "attr_custom_call_api_version_status_returning"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_custom_call_api_version_status_returning(%arg0: tensor<f32>) -> tensor<f32> {
   %0 = "stablehlo.custom_call"(%arg0) {
     call_target_name = "foo",
@@ -162,7 +148,6 @@ func.func @attr_custom_call_api_version_status_returning(%arg0: tensor<f32>) -> 
 }
 
 // CHECK-LABEL: "attr_custom_call_api_version_status_returning_unified"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_custom_call_api_version_status_returning_unified(%arg0: tensor<f32>) -> tensor<f32> {
   %0 = "stablehlo.custom_call"(%arg0) {
     call_target_name = "foo",
@@ -172,10 +157,15 @@ func.func @attr_custom_call_api_version_status_returning_unified(%arg0: tensor<f
   func.return %0 : tensor<f32>
 }
 
+// CHECK-LABEL: "attr_dict"
+// CHECK: #vhlo.dict_v1<{#vhlo.string_v1<"attr1"> = #vhlo.integer_v1<1 : i32>, #vhlo.string_v1<"attr2"> = #vhlo.integer_v1<2 : i32>}
+func.func @attr_dict() attributes {stablehlo.attr = {attr1 = 1 : i32, attr2 = 2 : i32}} {
+  return
+}
+
 // DotDimensionNumbers aka #stablehlo.dot is covered below.
 
 // CHECK-LABEL: "attr_fft_type_fft"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_fft_type_fft(%arg0: tensor<16xcomplex<f32>>) -> tensor<16xcomplex<f32>> {
   %0 = "stablehlo.fft"(%arg0) {
     // CHECK: fft_type = #vhlo<fft_type_v1 FFT>
@@ -186,7 +176,6 @@ func.func @attr_fft_type_fft(%arg0: tensor<16xcomplex<f32>>) -> tensor<16xcomple
 }
 
 // CHECK-LABEL: "attr_fft_type_ifft"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_fft_type_ifft(%arg0: tensor<16xcomplex<f32>>) -> tensor<16xcomplex<f32>> {
   %0 = "stablehlo.fft"(%arg0) {
     // CHECK: fft_type = #vhlo<fft_type_v1 IFFT>
@@ -197,7 +186,6 @@ func.func @attr_fft_type_ifft(%arg0: tensor<16xcomplex<f32>>) -> tensor<16xcompl
 }
 
 // CHECK-LABEL: "attr_fft_type_rfft"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_fft_type_rfft(%arg0: tensor<16xf32>) -> tensor<9xcomplex<f32>> {
   %0 = "stablehlo.fft"(%arg0) {
     // CHECK: fft_type = #vhlo<fft_type_v1 RFFT>
@@ -208,7 +196,6 @@ func.func @attr_fft_type_rfft(%arg0: tensor<16xf32>) -> tensor<9xcomplex<f32>> {
 }
 
 // CHECK-LABEL: "attr_fft_type_irfft"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_fft_type_irfft(%arg0: tensor<9xcomplex<f32>>) -> tensor<16xf32> {
   %0 = "stablehlo.fft"(%arg0) {
     // CHECK: fft_type = #vhlo<fft_type_v1 IRFFT>
@@ -221,7 +208,6 @@ func.func @attr_fft_type_irfft(%arg0: tensor<9xcomplex<f32>>) -> tensor<16xf32> 
 // GatherDimensionNumbers aka #stablehlo.gather is covered below.
 
 // CHECK-LABEL: "attr_precision_config_default"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_precision_config_default(%arg0: tensor<8x16xf32>, %arg1: tensor<16x8xf32>) -> tensor<8x8xf32> {
   %0 = "stablehlo.dot"(%arg0, %arg1) {
     // CHECK: precision_config = #vhlo.array_v1<[#vhlo<precision_v1 DEFAULT>, #vhlo<precision_v1 DEFAULT>]>
@@ -230,7 +216,6 @@ func.func @attr_precision_config_default(%arg0: tensor<8x16xf32>, %arg1: tensor<
 }
 
 // CHECK-LABEL: "attr_precision_config_high"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_precision_config_high(%arg0: tensor<8x16xf32>, %arg1: tensor<16x8xf32>) -> tensor<8x8xf32> {
   %0 = "stablehlo.dot"(%arg0, %arg1) {
     // CHECK: precision_config = #vhlo.array_v1<[#vhlo<precision_v1 HIGH>, #vhlo<precision_v1 HIGH>]>
@@ -240,7 +225,6 @@ func.func @attr_precision_config_high(%arg0: tensor<8x16xf32>, %arg1: tensor<16x
 }
 
 // CHECK-LABEL: "attr_precision_config_highest"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_precision_config_highest(%arg0: tensor<8x16xf32>, %arg1: tensor<16x8xf32>) -> tensor<8x8xf32> {
   %0 = "stablehlo.dot"(%arg0, %arg1) {
     // CHECK: precision_config = #vhlo.array_v1<[#vhlo<precision_v1 HIGHEST>, #vhlo<precision_v1 HIGHEST>]>
@@ -250,7 +234,6 @@ func.func @attr_precision_config_highest(%arg0: tensor<8x16xf32>, %arg1: tensor<
 }
 
 // CHECK-LABEL: "attr_rng_algorithm_default"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_rng_algorithm_default(%arg0: tensor<f32>) -> (tensor<f32>, tensor<f32>) {
   %0:2 = "stablehlo.rng_bit_generator"(%arg0) {
     // CHECK: rng_algorithm = #vhlo<rng_algorithm_v1 DEFAULT>
@@ -260,7 +243,6 @@ func.func @attr_rng_algorithm_default(%arg0: tensor<f32>) -> (tensor<f32>, tenso
 }
 
 // CHECK-LABEL: "attr_rng_algorithm_three_fry"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_rng_algorithm_three_fry(%arg0: tensor<f32>) -> (tensor<f32>, tensor<f32>) {
   %0:2 = "stablehlo.rng_bit_generator"(%arg0) {
     // CHECK: rng_algorithm = #vhlo<rng_algorithm_v1 THREE_FRY>
@@ -270,7 +252,6 @@ func.func @attr_rng_algorithm_three_fry(%arg0: tensor<f32>) -> (tensor<f32>, ten
 }
 
 // CHECK-LABEL: "attr_rng_algorithm_philox"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @attr_rng_algorithm_philox(%arg0: tensor<f32>) -> (tensor<f32>, tensor<f32>) {
   %0:2 = "stablehlo.rng_bit_generator"(%arg0) {
     // CHECK: rng_algorithm = #vhlo<rng_algorithm_v1 PHILOX>
@@ -280,7 +261,6 @@ func.func @attr_rng_algorithm_philox(%arg0: tensor<f32>) -> (tensor<f32>, tensor
 }
 
 // CHECK-LABEL: "attr_rng_distribution_uniform"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
 func.func @attr_rng_distribution_uniform(%arg0: tensor<f32>, %arg1: tensor<f32>, %arg2: tensor<0xindex>) -> tensor<f32> {
   %0 = "stablehlo.rng"(%arg0, %arg1, %arg2) {
     // CHECK: rng_distribution = #vhlo<rng_distribution_v1 UNIFORM>
@@ -290,7 +270,6 @@ func.func @attr_rng_distribution_uniform(%arg0: tensor<f32>, %arg1: tensor<f32>,
 }
 
 // CHECK-LABEL: "attr_rng_distribution_normal"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
 func.func @attr_rng_distribution_normal(%arg0: tensor<f32>, %arg1: tensor<f32>, %arg2: tensor<0xindex>) -> tensor<f32> {
   %0 = "stablehlo.rng"(%arg0, %arg1, %arg2) {
     // CHECK: rng_distribution = #vhlo<rng_distribution_v1 NORMAL>
@@ -302,7 +281,6 @@ func.func @attr_rng_distribution_normal(%arg0: tensor<f32>, %arg1: tensor<f32>, 
 // ScatterDimensionNumbers aka #stablehlo.scatter is covered below.
 
 // CHECK-LABEL: "attr_transpose_no_transpose"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_transpose_no_transpose(%arg0: tensor<16x16xf32>, %arg1: tensor<16x16xf32>) ->  tensor<16x16xf32> {
   %0 = "stablehlo.triangular_solve"(%arg0, %arg1) {
     left_side = true,
@@ -315,7 +293,6 @@ func.func @attr_transpose_no_transpose(%arg0: tensor<16x16xf32>, %arg1: tensor<1
 }
 
 // CHECK-LABEL: "attr_transpose_transpose"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_transpose_transpose(%arg0: tensor<16x16xf32>, %arg1: tensor<16x16xf32>) ->  tensor<16x16xf32> {
   %0 = "stablehlo.triangular_solve"(%arg0, %arg1) {
     left_side = true,
@@ -328,7 +305,6 @@ func.func @attr_transpose_transpose(%arg0: tensor<16x16xf32>, %arg1: tensor<16x1
 }
 
 // CHECK-LABEL: "attr_transpose_adjoint"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @attr_transpose_adjoint(%arg0: tensor<16x16xf32>, %arg1: tensor<16x16xf32>) ->  tensor<16x16xf32> {
   %0 = "stablehlo.triangular_solve"(%arg0, %arg1) {
     left_side = true,
@@ -344,11 +320,12 @@ func.func @attr_transpose_adjoint(%arg0: tensor<16x16xf32>, %arg1: tensor<16x16x
 
 // CHECK-LABEL: "attr_type_extensions_bounds"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
-func.func @attr_type_extensions_bounds(%arg0: tensor<?x?xf32, #stablehlo.type_extensions<bounds = [16, ?]>>) -> tensor<?x?xf32, #stablehlo.type_extensions<bounds = [16, ?]>> {
+func.func @attr_type_extensions_bounds(
+  %arg0: tensor<?x?xf32, #stablehlo.type_extensions<bounds = [16, ?]>>)
+  -> tensor<?x?xf32, #stablehlo.type_extensions<bounds = [16, ?]>> {
   // CHECK: "vhlo.return_v1"(%[[ARG0]]) : (!vhlo.tensor_v1<?x?x!vhlo.f32_v1, #vhlo.type_extensions_v1<bounds = [16, ?]>>) -> ()
   func.return %arg0 : tensor<?x?xf32, #stablehlo.type_extensions<bounds = [16, ?]>>
 }
-
 
 // ============ DEFAULTS ============
 
@@ -434,6 +411,19 @@ func.func @default_collective_permute(%arg0: tensor<16x8xf32>) -> tensor<16x8xf3
   func.return %0 : tensor<16x8xf32>
 }
 
+// CHECK-LABEL: "default_collective_broadcast"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
+func.func @default_collective_broadcast(%arg0: tensor<16x8xf32>) -> tensor<16x8xf32> {
+  //               CHECK: "vhlo.collective_broadcast_v1"(%[[ARG0]]) <{
+  //          CHECK-SAME:   channel_id = #vhlo.integer_v1<0 : i64>,
+  // CHECK-SAME{LITERAL}:   replica_groups = #vhlo.tensor_v1<dense<[[0, 1]]> : tensor<1x2xi64>>
+  //          CHECK-SAME: }> : (!vhlo.tensor_v1<16x8x!vhlo.f32_v1>) -> !vhlo.tensor_v1<16x8x!vhlo.f32_v1>
+  %0 = "stablehlo.collective_broadcast"(%arg0) {
+    replica_groups = dense<[[0, 1]]> : tensor<1x2xi64>
+  } : (tensor<16x8xf32>) -> tensor<16x8xf32>
+  func.return %0 : tensor<16x8xf32>
+}
+
 // CHECK-LABEL: "default_compare"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @default_compare(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1> {
@@ -445,6 +435,22 @@ func.func @default_compare(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<i1>
     comparison_direction = #stablehlo<comparison_direction EQ>
   } : (tensor<f32>, tensor<f32>) -> tensor<i1>
   func.return %0 : tensor<i1>
+}
+
+// CHECK-LABEL: "default_composite"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
+func.func @default_composite(%arg0: tensor<f32>) -> tensor<f32> {
+  //               CHECK: "vhlo.composite_v1"(%[[ARG0]]) <{
+  //          CHECK-SAME:   composite_attributes = #vhlo.dict_v1<{}>
+  //          CHECK-SAME:   decomposition = #vhlo.string_v1<"composite_target">
+  //          CHECK-SAME:   name = #vhlo.string_v1<"stablehlo.composite_target">
+  //          CHECK-SAME:   version = #vhlo.integer_v1<0 : i64>
+  //          CHECK-SAME: }> : (!vhlo.tensor_v1<!vhlo.f32_v1>) -> !vhlo.tensor_v1<!vhlo.f32_v1>
+  %0 = "stablehlo.composite"(%arg0) {
+    name = "stablehlo.composite_target",
+    decomposition = @composite_target
+  } : (tensor<f32>) -> tensor<f32>
+  func.return %0 : tensor<f32>
 }
 
 // CHECK-LABEL: "default_convolution"
@@ -544,7 +550,7 @@ func.func @default_dynamic_broadcast_in_dim(%arg0: tensor<?x?xf32>, %arg1: tenso
 // CHECK-LABEL: "default_dynamic_conv"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
 func.func @default_dynamic_conv(%arg0: tensor<1x8x8x207xf32>, %arg1: tensor<3x3x207x16xf32>, %arg2: tensor<2x2xi32>) -> tensor<1x?x?x16xf32> {
-  //      CHECK: "vhlo.dynamic_conv_v1"(%[[ARG0]], %[[ARG1]], %[[ARG2]]) <{
+  //      CHECK: "vhlo.dynamic_conv_v2"(%[[ARG0]], %[[ARG1]], %[[ARG2]]) <{
   // CHECK-SAME:   batch_group_count = #vhlo.integer_v1<1 : i64>,
   // CHECK-SAME:   feature_group_count = #vhlo.integer_v1<1 : i64>,
   // CHECK-SAME:   input_batch_dimension = #vhlo.integer_v1<0 : i64>,
@@ -557,7 +563,6 @@ func.func @default_dynamic_conv(%arg0: tensor<1x8x8x207xf32>, %arg1: tensor<3x3x
   // CHECK-SAME:   output_batch_dimension = #vhlo.integer_v1<0 : i64>,
   // CHECK-SAME:   output_feature_dimension = #vhlo.integer_v1<3 : i64>,
   // CHECK-SAME:   output_spatial_dimensions = #vhlo.tensor_v1<dense<[1, 2]> : tensor<2xi64>>,
-  // CHECK-SAME:   padding = #vhlo.tensor_v1<dense<0> : tensor<2x2xi64>>,
   // CHECK-SAME:   precision_config = #vhlo.array_v1<[#vhlo<precision_v1 DEFAULT>, #vhlo<precision_v1 DEFAULT>]>,
   // CHECK-SAME:   rhs_dilation = #vhlo.tensor_v1<dense<1> : tensor<2xi64>>,
   // CHECK-SAME:   window_reversal = #vhlo.tensor_v1<dense<false> : tensor<2xi1>>,
@@ -873,6 +878,26 @@ func.func @op_all_reduce(%arg0: tensor<f32>) -> tensor<f32> {
   func.return %0 : tensor<f32>
 }
 
+// CHECK-LABEL: "op_all_reduce_with_promotable_types"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
+func.func @op_all_reduce_with_promotable_types(%operand: tensor<f32>) -> tensor<f64> {
+  //  CHECK: "vhlo.all_reduce_v1"(%[[ARG0]])
+  //  CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>):
+  //  CHECK:     "vhlo.return_v1"(%[[VAL1:.*]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>) -> ()
+  //  CHECK: }) : (!vhlo.tensor_v1<!vhlo.f32_v1>) -> !vhlo.tensor_v1<!vhlo.f64_v1>
+  %result = "stablehlo.all_reduce"(%operand) ({
+    ^bb0(%arg0: tensor<f64>, %arg1: tensor<f64>):
+      %0 = "stablehlo.add"(%arg0, %arg1) : (tensor<f64>, tensor<f64>) -> tensor<f64>
+      "stablehlo.return"(%0) : (tensor<f64>) -> ()
+  }) {
+    replica_groups = dense<[[0, 1]]> : tensor<1x2xi64>,
+    channel_handle = #stablehlo.channel_handle<handle = 1, type = 0>,
+    use_global_device_ids
+  } : (tensor<f32>) -> tensor<f64>
+
+  func.return %result : tensor<f64>
+}
+
 // CHECK-LABEL: "op_all_to_all"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @op_all_to_all(%arg0: tensor<4x16xf32>) -> tensor<16x4xf32> {
@@ -1075,6 +1100,27 @@ func.func @op_complex(%arg0: tensor<f32>, %arg1: tensor<f32>) -> tensor<complex<
   func.return %0 : tensor<complex<f32>>
 }
 
+// CHECK-LABEL: "op_composite"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
+func.func @op_composite(%arg0: tensor<f32>) -> tensor<f32> {
+  //               CHECK: "vhlo.composite_v1"(%[[ARG0]]) <{
+  //          CHECK-SAME:   composite_attributes = #vhlo.dict_v1<{#vhlo.string_v1<"my_int"> = #vhlo.integer_v1<1 : i64>, #vhlo.string_v1<"my_string"> = #vhlo.string_v1<"foo">}>
+  //          CHECK-SAME:   decomposition = #vhlo.string_v1<"composite_target">
+  //          CHECK-SAME:   name = #vhlo.string_v1<"stablehlo.composite_target">
+  //          CHECK-SAME:   version = #vhlo.integer_v1<1 : i32>
+  //          CHECK-SAME: }> : (!vhlo.tensor_v1<!vhlo.f32_v1>) -> !vhlo.tensor_v1<!vhlo.f32_v1>
+  %0 = "stablehlo.composite"(%arg0) {
+    name = "stablehlo.composite_target",
+    decomposition = @composite_target,
+    version = 1 : i32,
+    composite_attributes = {
+      my_string = "foo",
+      my_int = 1 : i64
+    }
+  } : (tensor<f32>) -> tensor<f32>
+  func.return %0 : tensor<f32>
+}
+
 // CHECK-LABEL: "op_concatenate"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @op_concatenate(%arg0: tensor<8xf32>, %arg1: tensor<8xf32>) -> tensor<16xf32> {
@@ -1264,7 +1310,7 @@ func.func @op_dynamic_broadcast_in_dim(%arg0: tensor<?x?xf32>, %arg1: tensor<2xi
 // CHECK-LABEL: "op_dynamic_conv"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
 func.func @op_dynamic_conv(%arg0: tensor<1x8x8x207xf32>, %arg1: tensor<3x3x207x16xf32>, %arg2: tensor<2x2xi32>) -> tensor<1x?x?x16xf32> {
-  //      CHECK: "vhlo.dynamic_conv_v1"(%[[ARG0]], %[[ARG1]], %[[ARG2]]) <{
+  //      CHECK: "vhlo.dynamic_conv_v2"(%[[ARG0]], %[[ARG1]], %[[ARG2]]) <{
   // CHECK-SAME:   batch_group_count = #vhlo.integer_v1<1 : i64>,
   // CHECK-SAME:   feature_group_count = #vhlo.integer_v1<1 : i64>,
   // CHECK-SAME:   input_batch_dimension = #vhlo.integer_v1<0 : i64>,
@@ -1277,7 +1323,6 @@ func.func @op_dynamic_conv(%arg0: tensor<1x8x8x207xf32>, %arg1: tensor<3x3x207x1
   // CHECK-SAME:   output_batch_dimension = #vhlo.integer_v1<0 : i64>,
   // CHECK-SAME:   output_feature_dimension = #vhlo.integer_v1<3 : i64>,
   // CHECK-SAME:   output_spatial_dimensions = #vhlo.tensor_v1<dense<[1, 2]> : tensor<2xi64>>,
-  // CHECK-SAME:   padding = #vhlo.tensor_v1<dense<0> : tensor<2x2xi64>>,
   // CHECK-SAME:   precision_config = #vhlo.array_v1<[#vhlo<precision_v1 HIGHEST>, #vhlo<precision_v1 HIGHEST>]>,
   // CHECK-SAME:   rhs_dilation = #vhlo.tensor_v1<dense<2> : tensor<2xi64>>,
   // CHECK-SAME:   window_reversal = #vhlo.tensor_v1<dense<true> : tensor<2xi1>>,
@@ -1742,6 +1787,23 @@ func.func @op_reduce_precision(%arg0: tensor<f32>) -> tensor<f32> {
   func.return %0 : tensor<f32>
 }
 
+// CHECK_lABEL: "op_reduce_with_promotable_types"
+func.func @op_reduce_with_promotable_types(%arg0: tensor<4x4xf32>, %arg1 : tensor<f32>)
+    -> (tensor<4xf64>) {
+  //  CHECK: "vhlo.reduce_v1"(%[[ARG0:.*]], %[[ARG1:.*]])
+  //  CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>):
+  //  CHECK:     "vhlo.return_v1"(%[[VAL1:.*]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>) -> ()
+  //  CHECK: }) : (!vhlo.tensor_v1<4x4x!vhlo.f32_v1>, !vhlo.tensor_v1<!vhlo.f32_v1>) -> !vhlo.tensor_v1<4x!vhlo.f64_v1>
+  %0 = "stablehlo.reduce"(%arg0, %arg1) ({
+  ^bb0(%arg2: tensor<f64>, %arg3: tensor<f64> ):
+    %1 = "stablehlo.add"(%arg2, %arg3) : (tensor<f64>, tensor<f64>) -> tensor<f64>
+    "stablehlo.return"(%1) : (tensor<f64>) -> ()
+
+  }) {dimensions = array<i64: 0>} : (tensor<4x4xf32>, tensor<f32>) -> tensor<4xf64>
+
+  func.return %0: tensor<4xf64>
+}
+
 // CHECK-LABEL: "op_reduce_scatter"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
 func.func @op_reduce_scatter(%arg0: tensor<16xf32>) -> tensor<16xf32> {
@@ -1768,10 +1830,27 @@ func.func @op_reduce_scatter(%arg0: tensor<16xf32>) -> tensor<16xf32> {
   func.return %0 : tensor<16xf32>
 }
 
+// CHECK_lABEL: "op_reduce_scatter_with_promotable_types"
+func.func @op_reduce_scatter_with_promotable_types(%data: tensor<4x16xf32>) -> tensor<4x4xf64> {
+  //  CHECK: "vhlo.reduce_scatter_v1"(%[[ARG0:.*]])
+  //  CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>):
+  //  CHECK:     "vhlo.return_v1"(%[[VAL1:.*]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>) -> ()
+  //  CHECK: }) : (!vhlo.tensor_v1<4x16x!vhlo.f32_v1>) -> !vhlo.tensor_v1<4x4x!vhlo.f64_v1>
+  %0 = "stablehlo.reduce_scatter"(%data) ({
+    ^bb0(%arg2: tensor<f64>, %arg3: tensor<f64>):
+    %1 = stablehlo.add %arg2, %arg3 : tensor<f64>
+    "stablehlo.return"(%1) : (tensor<f64>) -> ()
+  }) {replica_groups = dense<[[0, 1, 2, 3]]> : tensor<1x4xi64>,
+      scatter_dimension = 1 : i64,
+      channel_handle = #stablehlo.channel_handle<handle = 1, type = 0>,
+      use_global_device_ids} : (tensor<4x16xf32>) -> tensor<4x4xf64>
+  func.return %0 : tensor<4x4xf64>
+}
+
+
 // CHECK-LABEL: "op_reduce_window"
-// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
 func.func @op_reduce_window(%arg0: tensor<2x17x31x7xf32>, %arg1: tensor<f32>) -> tensor<2x9x16x7xf32> {
-  //               CHECK: "vhlo.reduce_window_v1"(%[[ARG0]], %[[ARG1]]) <{
+  //               CHECK: "vhlo.reduce_window_v1"(%[[ARG0:.*]], %[[ARG1:.*]]) <{
   //          CHECK-SAME:   base_dilations = #vhlo.tensor_v1<dense<[1, 2, 2, 1]> : tensor<4xi64>>,
   // CHECK-SAME{LITERAL}:   padding = #vhlo.tensor_v1<dense<[[0, 0], [2, 0], [0, 2], [0, 0]]> : tensor<4x2xi64>>,
   //          CHECK-SAME:   window_dilations = #vhlo.tensor_v1<dense<[1, 2, 2, 1]> : tensor<4xi64>>,
@@ -1794,6 +1873,29 @@ func.func @op_reduce_window(%arg0: tensor<2x17x31x7xf32>, %arg1: tensor<f32>) ->
     padding = dense<[[0, 0], [2, 0], [0, 2], [0, 0]]> : tensor<4x2xi64>
   } : (tensor<2x17x31x7xf32>, tensor<f32>) -> tensor<2x9x16x7xf32>
   func.return %0 : tensor<2x9x16x7xf32>
+}
+
+// CHECK_lABEL: "op_reduce_window_with_promotable_types"
+func.func @op_reduce_window_with_promotable_types(%arg0: tensor<4x2xf32>,
+    %arg1: tensor<4x2xf32>, %init0: tensor<f32>, %init1: tensor<f32>) ->
+    (tensor<2x2xf64>, tensor<2x2xf32>) {
+  //  CHECK: "vhlo.reduce_window_v1"(%[[ARG0:.*]], %[[ARG1:.*]], %[[ARG2:.*]], %[[ARG3:.*]])
+  //  CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f32_v1>, %[[ARG3:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG4:arg.*]]: !vhlo.tensor_v1<!vhlo.f32_v1>):
+  //  CHECK:     "vhlo.return_v1"(%[[VAL1:.*]], %[[VAL2:.*]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>, !vhlo.tensor_v1<!vhlo.f32_v1>) -> ()
+  //  CHECK: }) : (!vhlo.tensor_v1<4x2x!vhlo.f32_v1>, !vhlo.tensor_v1<4x2x!vhlo.f32_v1>, !vhlo.tensor_v1<!vhlo.f32_v1>, !vhlo.tensor_v1<!vhlo.f32_v1>) -> (!vhlo.tensor_v1<2x2x!vhlo.f64_v1>, !vhlo.tensor_v1<2x2x!vhlo.f32_v1>)
+  %0:2 = "stablehlo.reduce_window"(%arg0, %arg1, %init0, %init1) ({
+         ^bb0(%a0: tensor<f64>, %a1: tensor<f32>, %b0: tensor<f64>,
+                %b1: tensor<f32>):
+              %2 = stablehlo.add %a0, %b0 : tensor<f64>
+              %3 = stablehlo.add %a1, %b1 : tensor<f32>
+              "stablehlo.return"(%2,%3) : (tensor<f64>, tensor<f32>) -> ()
+            })
+         { padding = dense<[[2, 2], [0, 0]]> : tensor<2x2xi64>,
+         window_dimensions = array<i64: 5, 1>,
+         window_strides = array<i64: 3, 1> }
+         : (tensor<4x2xf32>, tensor<4x2xf32>, tensor<f32>, tensor<f32>) ->
+              (tensor<2x2xf64>, tensor<2x2xf32>)
+  func.return %0#0, %0#1 : tensor<2x2xf64>, tensor<2x2xf32>
 }
 
 // CHECK-LABEL: "op_remainder"
@@ -1930,6 +2032,32 @@ func.func @op_scatter(%arg0: tensor<200x100x300xf32>, %arg1: tensor<10x2xi32>, %
   func.return %0 : tensor<200x100x300xf32>
 }
 
+// CHECK_lABEL: "op_scatter_with_promotable_types"
+func.func @op_scatter_with_promotable_types(%input_tensor: tensor<200x100x300xf32>,
+    %scatter_indices: tensor<10x2xi32>, %updates: tensor<10x300xf32>) ->
+      tensor<200x100x300xf64> {
+  //  CHECK: "vhlo.scatter_v1"(%[[ARG0:.*]], %[[ARG1:.*]], %[[ARG2:.*]])
+  //  CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>):
+  //  CHECK:     "vhlo.return_v1"(%[[VAL1:.*]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>) -> ()
+  //  CHECK: }) : (!vhlo.tensor_v1<200x100x300x!vhlo.f32_v1>, !vhlo.tensor_v1<10x2x!vhlo.i32_v1>, !vhlo.tensor_v1<10x300x!vhlo.f32_v1>) -> !vhlo.tensor_v1<200x100x300x!vhlo.f64_v1>
+  %0 = "stablehlo.scatter" (%input_tensor, %scatter_indices, %updates) ({
+  ^bb0(%lhs: tensor<f64>, %rhs: tensor<f64>):
+    %add = stablehlo.add %lhs, %rhs : tensor<f64>
+    "stablehlo.return"(%add) : (tensor<f64>) -> ()
+  }) {
+    scatter_dimension_numbers = #stablehlo.scatter<
+      update_window_dims = [1],
+      inserted_window_dims = [0, 1],
+      scatter_dims_to_operand_dims = [0, 1],
+      index_vector_dim = 1
+    >,
+    indices_are_sorted = true,
+    unique_indices = true
+  } : (tensor<200x100x300xf32>, tensor<10x2xi32>, tensor<10x300xf32>) ->
+      tensor<200x100x300xf64>
+  func.return %0 : tensor<200x100x300xf64>
+}
+
 // CHECK-LABEL: "op_select_and_scatter"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
 func.func @op_select_and_scatter(%arg0: tensor<10x24x24x64xf32>, %arg1: tensor<12x13x13x66xf32>, %arg2: tensor<f32>) -> tensor<10x24x24x64xf32> {
@@ -1960,6 +2088,30 @@ func.func @op_select_and_scatter(%arg0: tensor<10x24x24x64xf32>, %arg1: tensor<1
     padding = dense<1> : tensor<4x2xi64>
   } : (tensor<10x24x24x64xf32>, tensor<12x13x13x66xf32>, tensor<f32>) -> tensor<10x24x24x64xf32>
   func.return %0 : tensor<10x24x24x64xf32>
+}
+
+// CHECK-LABEL: "op_select_and_scatter_with_promotable_types"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}}, %[[ARG2:.*]]: {{.*}})
+func.func @op_select_and_scatter_with_promotable_types(%arg0: tensor<10x24x24x64xf32>, %arg1: tensor<12x13x13x66xf32>, %arg2: tensor<f32>) -> tensor<10x24x24x64xf64> {
+  // CHECK: "vhlo.select_and_scatter_v1"(%[[ARG0]], %[[ARG1]], %[[ARG2]])
+  // CHECK:   ^[[BB:bb.*]](%[[ARG1:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>, %[[ARG2:arg.*]]: !vhlo.tensor_v1<!vhlo.f64_v1>):
+  // CHECK:     %[[VAL:.*]] = "vhlo.add_v1"(%[[ARG1]], %[[ARG2]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>, !vhlo.tensor_v1<!vhlo.f64_v1>) -> !vhlo.tensor_v1<!vhlo.f64_v1>
+  // CHECK:     "vhlo.return_v1"(%[[VAL]]) : (!vhlo.tensor_v1<!vhlo.f64_v1>) -> ()
+  // CHECK: }) : (!vhlo.tensor_v1<10x24x24x64x!vhlo.f32_v1>, !vhlo.tensor_v1<12x13x13x66x!vhlo.f32_v1>, !vhlo.tensor_v1<!vhlo.f32_v1>) -> !vhlo.tensor_v1<10x24x24x64x!vhlo.f64_v1>
+  %0 = "stablehlo.select_and_scatter"(%arg0, %arg1, %arg2) ({
+    ^bb0(%arg3: tensor<f32>, %arg4: tensor<f32>):
+      %1 = "stablehlo.compare"(%arg3, %arg4) {compare_type = #stablehlo<comparison_type TOTALORDER>, comparison_direction = #stablehlo<comparison_direction GE>} : (tensor<f32>, tensor<f32>) -> tensor<i1>
+      "stablehlo.return"(%1) : (tensor<i1>) -> ()
+  }, {
+    ^bb0(%arg3: tensor<f64>, %arg4: tensor<f64>):
+      %1 = "stablehlo.add"(%arg3, %arg4) : (tensor<f64>, tensor<f64>) -> tensor<f64>
+      "stablehlo.return"(%1) : (tensor<f64>) -> ()
+  }) {
+    window_dimensions = array<i64: 1, 2, 2, 1>,
+    window_strides = array<i64: 1, 2, 2, 1>,
+    padding = dense<1> : tensor<4x2xi64>
+  } : (tensor<10x24x24x64xf32>, tensor<12x13x13x66xf32>, tensor<f32>) -> tensor<10x24x24x64xf64>
+  func.return %0 : tensor<10x24x24x64xf64>
 }
 
 // CHECK-LABEL: "op_select"
@@ -2393,12 +2545,20 @@ func.func @type_dynamism_ranked(%arg0: tensor<?xf32>) -> tensor<?xf32> {
   func.return %0 : tensor<?xf32>
 }
 
-// CHECK-LABEL: "type_quantization"
+// CHECK-LABEL: "type_per_tensor_quantization"
 // CHECK-NEXT: (%[[ARG0:.*]]: {{.*}}, %[[ARG1:.*]]: {{.*}})
-func.func @type_quantization(%arg0: tensor<!quant.uniform<i8:f32, 34.0:16>>, %arg1: tensor<!quant.uniform<i8:f32, 34.0:16>>) -> tensor<!quant.uniform<i8:f32, 34.0:16>> {
+func.func @type_per_tensor_quantization(%arg0: tensor<!quant.uniform<i8:f32, 34.0:16>>, %arg1: tensor<!quant.uniform<i8:f32, 34.0:16>>) -> tensor<!quant.uniform<i8:f32, 34.0:16>> {
   // CHECK: "vhlo.add_v1"(%[[ARG0]], %[[ARG1]]) : (!vhlo.tensor_v1<!vhlo.quant_v1<!vhlo.i8_v1:!vhlo.f32_v1, 3.400000e+01:16, -128:127, 1>>, !vhlo.tensor_v1<!vhlo.quant_v1<!vhlo.i8_v1:!vhlo.f32_v1, 3.400000e+01:16, -128:127, 1>>) -> !vhlo.tensor_v1<!vhlo.quant_v1<!vhlo.i8_v1:!vhlo.f32_v1, 3.400000e+01:16, -128:127, 1>>
   %0 = "stablehlo.add"(%arg0, %arg1) : (tensor<!quant.uniform<i8:f32, 34.0:16>>, tensor<!quant.uniform<i8:f32, 34.0:16>>) -> tensor<!quant.uniform<i8:f32, 34.0:16>>
   func.return %0 : tensor<!quant.uniform<i8:f32, 34.0:16>>
+}
+
+// CHECK-LABEL: "type_per_axis_quantization"
+// CHECK-NEXT: (%[[ARG0:.*]]: {{.*}})
+func.func @type_per_axis_quantization(%arg0: tensor<2x!quant.uniform<i8:f32:0, {34.0:16, 34.0:16}>>) -> tensor<2x!quant.uniform<i8:f32:0, {34.0:16, 34.0:16}>> {
+  // CHECK: "vhlo.add_v1"(%[[ARG0]], %[[ARG0]]) : (!vhlo.tensor_v1<2x!vhlo.quant_per_axis_v1<!vhlo.i8_v1:!vhlo.f32_v1, 0, 3.400000e+01, 3.400000e+01, 16, 16, -128:127, 1>>, !vhlo.tensor_v1<2x!vhlo.quant_per_axis_v1<!vhlo.i8_v1:!vhlo.f32_v1, 0, 3.400000e+01, 3.400000e+01, 16, 16, -128:127, 1>>) -> !vhlo.tensor_v1<2x!vhlo.quant_per_axis_v1<!vhlo.i8_v1:!vhlo.f32_v1, 0, 3.400000e+01, 3.400000e+01, 16, 16, -128:127, 1>>
+  %0 = stablehlo.add %arg0, %arg0 : tensor<2x!quant.uniform<i8:f32:0, {34.0:16, 34.0:16}>>
+  func.return %0 : tensor<2x!quant.uniform<i8:f32:0, {34.0:16, 34.0:16}>>
 }
 
 //       CHECK: function_type = #vhlo.type_v1<!vhlo.func_v1<(!vhlo.token_v1) -> !vhlo.token_v1>>
@@ -2427,4 +2587,10 @@ func.func @type_tuple(%arg0: tuple<tensor<f32>>) -> tuple<!stablehlo.token> {
   // CHECK: (!vhlo.tuple_v1<!vhlo.tensor_v1<!vhlo.f32_v1>>) -> !vhlo.tuple_v1<!vhlo.token_v1>
   } : (tuple<tensor<f32>>) -> tuple<!stablehlo.token>
   return %0 : tuple<!stablehlo.token>
+}
+
+// ============ DEPENDENCIES  ============
+
+func.func @composite_target(%arg0: tensor<f32>) -> tensor<f32> {
+  return %arg0: tensor<f32>
 }
